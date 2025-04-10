@@ -1,0 +1,16 @@
+<nz-table nzTemplateMode>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (employee of employees$ | async; track employee.id) {
+    <tr>
+      <td>{{ employee.name }}</td>
+      <td><button nz-button nzType="default" (click)="edit(employee.id)">✏️ Edit</button></td>
+    </tr>
+    }
+  </tbody>
+</nz-table>

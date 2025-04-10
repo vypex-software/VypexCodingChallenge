@@ -1,0 +1,14 @@
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()">
+  <nz-form-item>
+    <nz-form-label>Name</nz-form-label>
+    <nz-form-control>
+      <input nz-input type="text" [formControl]="form.controls.name">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control class="modal-buttons">
+      <button nz-button nzType="primary">Submit</button>
+      <button nz-button type="button" nzType="link" (click)="cancel()">Cancel</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
