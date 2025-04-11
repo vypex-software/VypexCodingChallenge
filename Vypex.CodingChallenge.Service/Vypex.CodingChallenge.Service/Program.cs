@@ -30,6 +30,10 @@ namespace Vypex.CodingChallenge.Service
             {
                 app.MapOpenApi();
                 app.MapScalarApiReference();
+                app.UseCors(builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
             }
 
             app.UseHttpsRedirection();

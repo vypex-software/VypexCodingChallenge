@@ -5,7 +5,7 @@ using Vypex.CodingChallenge.Domain.Models;
 namespace Vypex.CodingChallenge.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EmployeesController : ControllerBase
     {
         [HttpGet(Name = "GetEmployees")]

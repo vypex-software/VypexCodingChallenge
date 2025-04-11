@@ -50,7 +50,29 @@ If there is anything in the scaffolded projects that you think could be done bet
 
 ### Frontend
 
-TBD
+#### Improve employees list component
+* Add a refresh/reload button to refetch the list of employees.
+* Use new Angular 19 resources.
+* Handle potential API errors.
+* Implement search by employee name functionality
+	* Minimise the number of requests to the API where possible
+* Feel free to change layout and structure of the page.
+
+#### Implement Edit employee functionality
+* Use Angular forms and Ant Design components for user input.
+* Implement employee leave form control as a separate and re-usable component.
+    * The user can dynamically add/modify multiple leave entries for an employee.
+    * Leave days cannot overlap.
+    * Both start and end date are required.
+    * Validate that `startDate` must be before `endDate`.
+
+#### Considerations
+* Use [Ant Design](https://ng.ant.design/components/overview/en) UI library.
+  * Feel free to add styles for any components you may use into */src/styles/antd.less* if they're not already included.
+* Follow best coding practices and principles where you can.
+* Incorporate latest features from Angular including [Angular 19](https://angular.love/angular-19-whats-new) where possible.
+* Feel free to add new dependencies if needed.
+* Unit tests are not required.
 
 ## Out of scope
 
@@ -61,3 +83,8 @@ TBD
 
 If you want to regenerate the SQLite db use the following command. The `--startup-project` and `--project` properties are important because of the project structure.
 `dotnet ef database update --startup-project .\Vypex.CodingChallenge.Service\Vypex.CodingChallenge.Service.csproj --project .\Vypex.CodingChallenge.Infrastructure\Vypex.CodingChallenge.Infrastructure.csproj`
+
+## Submission
+Once you've completed the test, create a zip archive of your submission and send it to the recruiter.
+
+Thank you and good luck!
