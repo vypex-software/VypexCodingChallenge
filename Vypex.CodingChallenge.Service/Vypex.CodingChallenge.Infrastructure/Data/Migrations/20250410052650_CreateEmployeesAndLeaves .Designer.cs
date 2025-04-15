@@ -10,9 +10,9 @@ using Vypex.CodingChallenge.Infrastructure.Data;
 
 namespace Vypex.CodingChallenge.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(CodingChallengeContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250410052650_CreateEmployees")]
-    partial class CreateEmployees
+    partial class CreateEmployeesAndLeaves
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

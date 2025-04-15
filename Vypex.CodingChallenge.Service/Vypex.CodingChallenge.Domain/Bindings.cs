@@ -2,7 +2,7 @@
 
 namespace Vypex.CodingChallenge.Domain
 {
-    public static class DomainModule
+    public static class Bindings
     {
         public static IServiceCollection AddDomainModule(this IServiceCollection services)
         {

@@ -1,0 +1,44 @@
+form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    nz-typography {
+      margin-bottom: 1rem;
+    }
+
+    .leave-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      nz-date-picker {
+        flex: 1;
+      }
+
+      button {
+        margin-top: 0.2rem;
+        padding: 0;
+        color: #ff4d4f;
+
+        &:hover {
+          color: #d9363e;
+        }
+      }
+    }
+
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+
+    .mt-3 {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+  }
