@@ -9,7 +9,7 @@ using Vypex.CodingChallenge.Infrastructure.Data;
 
 namespace Vypex.CodingChallenge.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(CodingChallengeContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class CodingChallengeContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -17,21 +17,76 @@ namespace Vypex.CodingChallenge.Infrastructure.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
 
+            // Employee Table
             modelBuilder.Entity("Vypex.CodingChallenge.Domain.Models.Employee", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Employees", (string)null);
-                });
+                b.ToTable("Employees", (string)null);
+            });
+
+            // Leave Table
+            modelBuilder.Entity("Vypex.CodingChallenge.Domain.Models.Leave", b =>
+            {
+                b.Property<Guid>("LeaveId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("TEXT");
+
+                b.Property<Guid>("EmployeeId")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("StartDate")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("EndDate")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("Createdon")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("CreatedBy")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("ModifiedOn")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("ModifiedBy")
+                    .HasMaxLength(100)
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedOn")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("DeletedBy")
+                    .HasMaxLength(100)
+                    .HasColumnType("TEXT");
+
+                b.HasKey("LeaveId");
+
+                b.HasIndex("EmployeeId");
+
+                b.ToTable("Leaves", (string)null);
+            });
+
+            modelBuilder.Entity("Vypex.CodingChallenge.Domain.Models.Leave", b =>
+            {
+                b.HasOne("Vypex.CodingChallenge.Domain.Models.Employee", "Employee")
+                    .WithMany()
+                    .HasForeignKey("EmployeeId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
         }
     }

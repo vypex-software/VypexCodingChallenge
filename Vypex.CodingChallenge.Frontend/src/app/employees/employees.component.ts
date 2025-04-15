@@ -1,21 +1,96 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { EmployeeApiService } from '../api/services/employee-api.service';
+import { finalize } from 'rxjs';
+import { EmployeeService } from '../api/services/employee-api.service';
+import { EmployeeEditModalComponent } from '../edit-employee/employee-edit-modal.component';
+import { EmployeeDTO, EmployeeListDTO } from '../interfaces/employeeDto';
 
 @Component({
-  selector: 'app-employees',
+  selector: 'app-employee-list',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIf,
     NzTableModule,
-    NzButtonModule,
-    AsyncPipe
+    FormsModule,
+    NzInputModule,
+    EmployeeEditModalComponent,
+    NzAlertModule,
   ],
   templateUrl: './employees.component.html',
-  styleUrl: './employees.component.scss'
+  styleUrls: ['./employees.component.scss'],
 })
-export class EmployeesComponent {
-  private readonly employeeApiService = inject(EmployeeApiService);
+export class EmployeeListComponent implements OnInit {
+  employees: EmployeeListDTO[] = [];
+  filteredEmployees: EmployeeListDTO[] = [];
+  searchTerm = '';
+  loading = false;
+  error: string | null = null;
+  selectedEmployeeId: string | null = null;
+  selectedEmployee: EmployeeDTO | null = null;
 
-  public readonly employees$ = this.employeeApiService.getEmployees();
+  constructor(private employeeService: EmployeeService) {}
+
+  ngOnInit() {
+    this.loadEmployees();
+  }
+
+  loadEmployees() {
+    this.loading = true;
+    this.error = null;
+    this.employeeService
+      .getEmployees()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (data) => {
+          this.employees = data;
+          this.filteredEmployees = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load employees.';
+          this.loading = false;
+        },
+      });
+  }
+
+  onSearch() {
+    this.applySearch();
+  }
+
+  applySearch() {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredEmployees = this.employees.filter((e) =>
+      e.name.toLowerCase().includes(term)
+    );
+  }
+
+  reload() {
+    this.loadEmployees();
+  }
+
+  editEmployee(employeeId: string) {
+    this.loadEmployeeDetails(employeeId);
+  }
+  loadEmployeeDetails(employeeId: string) {
+    this.loading = true;
+    this.error = null;
+    this.employeeService.getEmployeeDetails(employeeId).subscribe({
+      next: (data) => {
+        this.selectedEmployee = data;
+      },
+      error: (err) => {
+        this.error = 'Failed to load employee details.';
+        this.loading = false;
+      },
+    });
+  }
+  onEmployeeUpdated() {
+    this.selectedEmployeeId = null;
+    this.reload();
+  }
 }

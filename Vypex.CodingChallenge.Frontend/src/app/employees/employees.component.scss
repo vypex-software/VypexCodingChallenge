@@ -1,0 +1,29 @@
+// Add spacing around the search input group and reload button
+.nz-input-group {
+    margin-bottom: 16px; // Add space below the search bar
+  }
+
+  button[nz-button] {
+    margin-left: 12px; // Add space between the search bar and reload button
+    margin-bottom: 16px; // Add space below the button
+    margin-top: 16px;
+  }
+  .search-bar {
+    display: flex; // Use flexbox to align items in a row
+    align-items: center; // Center items vertically
+  }
+
+  // Add some margin to the top of the table
+  nz-table {
+    margin-top: 16px; // Add space above the table
+  }
+
+  // Add spacing between table rows, make the table more readable
+  nz-table th, nz-table td {
+    padding: 8px 16px; // Add padding inside table cells
+  }
+
+  // Optional: add padding to the body of the table to make it feel more spacious
+  nz-table tbody {
+    padding-bottom: 16px;
+  }

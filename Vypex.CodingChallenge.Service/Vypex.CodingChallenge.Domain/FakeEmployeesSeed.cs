@@ -1,21 +1,32 @@
 ﻿using Bogus;
 using Vypex.CodingChallenge.Domain.Models;
 
-namespace Vypex.CodingChallenge.Domain
+namespace Vypex.CodingChallenge.Domain;
+
+public static class FakeEmployeesSeed
 {
-    public static class FakeEmployeesSeed
+public static List<Employee> Generate(int count)
+{
+    var faker = new Faker();
+
+    return Enumerable.Range(1, count).Select(_ =>
     {
-        public static IEnumerable<Employee> Generate(int count) =>
-            new Faker<Employee>()
-                .UseSeed(8675309)
-                .StrictMode(false)
-                .RuleFor(e => e.Id, _ => Guid.NewGuid())
-                .RuleFor(e => e.Name, f => f.Name.FullName())
-                .Generate(count)
-                .Select(e => new Employee
+        var id = Guid.NewGuid();
+
+        return new Employee
+        {
+            Id = id,
+            Name = faker.Name.FullName(),
+            Leaves = new List<Leave>
+            {
+                new Leave
                 {
-                    Id = e.Id,
-                    Name = e.Name
-                });
-    }
-}
+                    LeaveId = Guid.NewGuid(),
+                    StartDate = DateTime.Now.AddDays(-faker.Random.Int(0, 10)),
+                    EndDate = DateTime.Now.AddDays(faker.Random.Int(1, 10)),
+                    EmployeeId = id
+                }
+            }
+        };
+    }).ToList();
+}}

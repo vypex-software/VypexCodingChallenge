@@ -1,14 +1,43 @@
-<nz-table nzTemplateMode>
+<nz-input-group nzSearch [nzSuffix]="suffixIcon" class="mb-3 search-bar">
+  <input
+    type="text"
+    nz-input
+    [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearch()"
+    placeholder="Search employee..."
+  />
+  <ng-template #suffixIcon><i nz-icon nzType="search"></i></ng-template>
+</nz-input-group>
+
+<button nz-button nzType="default" (click)="reload()">Refresh</button>
+
+<nz-table [nzData]="filteredEmployees" [nzShowPagination]="false">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Total Leave Days</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    @for (employee of employees$ | async; track employee.id) {
+    @for (employee of filteredEmployees; track employee.id) {
     <tr>
       <td>{{ employee.name }}</td>
+      <td>{{ employee.totalLeaveDays }}</td>
+      <td>
+        <button nz-button nzType="link" (click)="editEmployee(employee.id)">
+          Edit
+        </button>
+      </td>
     </tr>
     }
   </tbody>
 </nz-table>
+
+<nz-alert *ngIf="error" [nzMessage]="error" nzType="error"></nz-alert>
+
+<employee-edit-modal
+  *ngIf="selectedEmployee"
+  [selectedEmployee]="selectedEmployee"
+  (close)="selectedEmployee = null"
+></employee-edit-modal>
