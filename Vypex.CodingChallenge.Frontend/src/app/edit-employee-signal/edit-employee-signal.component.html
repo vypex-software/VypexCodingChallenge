@@ -1,0 +1,13 @@
+<nz-modal [nzTitle]="'Edit Employee Leaves'" [nzVisible]="true" (nzOnCancel)="onCancel()" (nzOnOk)="onSubmit()" [nzOkLoading]="loading()">
+    <ng-container *ngIf="leaves().length > 0">
+      <div *ngFor="let leave of leaves(); let i = index">
+        <nz-date-picker [(ngModel)]="leaves()[i].startDate" (ngModelChange)="updateLeave(i, 'startDate', $event)" />
+        <nz-date-picker [(ngModel)]="leaves()[i].endDate" (ngModelChange)="updateLeave(i, 'endDate', $event)" />
+        <button nz-button nzType="text" (click)="removeLeave(i)">Remove</button>
+      </div>
+    </ng-container>
+
+    <button nz-button nzType="dashed" (click)="addLeave()">Add Leave</button>
+
+    <div *ngIf="error()" class="error">{{ error() }}</div>
+  </nz-modal>

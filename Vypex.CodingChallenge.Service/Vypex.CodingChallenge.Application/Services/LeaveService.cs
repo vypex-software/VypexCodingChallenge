@@ -33,10 +33,16 @@ public class LeaveService : ILeaveService
 
         foreach (var newLeave in leaves)
         {
+            if (newLeave.LeaveId == Guid.Empty)
+            {
+                var leaveEntity = MapToEntity(employeeId, newLeave);
+                await _leaveRepo.AddAsync(leaveEntity, cancellationToken);
+                continue;
+            }
             var existingLeave = existingLeaves
                 .FirstOrDefault(l => l.LeaveId == newLeave.LeaveId);
 
-            if (existingLeave != null)
+            if (existingLeave is not null)
             {
                 // Update leave if there are changes
                 if (existingLeave.StartDate != newLeave.StartDate || existingLeave.EndDate != newLeave.EndDate)
@@ -47,10 +53,6 @@ public class LeaveService : ILeaveService
                 }
                 existingLeaves.Remove(existingLeave);
             }
-            else
-            {
-                leavesToAdd.Add(MapToEntity(employeeId, newLeave));
-            }
         }
 
         // Delete leaves that no longer exist in the new list
@@ -60,11 +62,6 @@ public class LeaveService : ILeaveService
             leavesToDelete.Add(leaveToDelete);
         }
 
-        // Add new leaves
-        foreach (var leave in leavesToAdd)
-        {
-            await _leaveRepo.AddAsync(leave, cancellationToken);
-        }
         return true;
     }
 

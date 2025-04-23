@@ -24,7 +24,7 @@ public class EmployeesController : ApiControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>Success or Failed Update</returns>
 
-    [HttpPut("{employee_id}")]
+    [HttpPost("{employee_id}")]
     public async Task<IActionResult> UpsertEmployeeLeaveDetails(
    [FromRoute(Name = "employee_id")] Guid employeeId,
    [FromBody] UpsertEmployeeLeaveCommand command,

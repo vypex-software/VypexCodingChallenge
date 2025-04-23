@@ -1,4 +1,3 @@
-import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
@@ -6,67 +5,50 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { EmployeeService } from '../api';
 import { EmployeeDTO } from '../interfaces/employeeDto';
 import { LeaveDTO } from '../interfaces/leaveDto';
-import { EmployeeService } from '../api';
+import { NgZorroModule } from '../modules/NgZorro.module';
+import { EMPTY_GUID } from '../utils/constants';
 
 @Component({
   selector: 'employee-edit-modal',
   standalone: true,
-  templateUrl: '/employee-edit-modal.component.html',
-  styleUrls: ['/employee-edit-modal.component.scss'],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NzInputModule,
-    NzButtonModule,
-    NzDatePickerModule,
-    NzFormModule,
-    NzTypographyModule,
-    NzModalModule,
-    NzLayoutModule,
-    OverlayModule,
-  ],
+  templateUrl: './employee-edit-modal.component.html',
+  styleUrls: ['./employee-edit-modal.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, NgZorroModule],
 })
 export class EmployeeEditModalComponent implements OnInit {
   @Input() selectedEmployee!: EmployeeDTO;
   @Output() close = new EventEmitter<void>();
-  isVisible = true;
   loading = false;
   error: string | null = null;
   form!: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private modal: NzModalService,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
   ) {}
-
   ngOnInit(): void {
     if (this.selectedEmployee) {
-        this.setUpForm();
-      }
+      this.setUpForm();
+    }
   }
 
   ngOnChanges() {
     if (this.selectedEmployee) {
-        this.setUpForm();
-      }
+      this.setUpForm();
+    }
   }
   ngOnDestroy() {
     this.form.reset();
+  }
+
+  onCancel() {
+    this.close.emit();
   }
 
   setUpForm() {
@@ -78,11 +60,11 @@ export class EmployeeEditModalComponent implements OnInit {
           )
         ),
       },
-      { validators: this.leavesDoNotOverlapValidator }
+      { validators: this.leavesOverlapValidator }
     );
   }
 
-  leavesDoNotOverlapValidator(group: AbstractControl): ValidationErrors | null {
+  leavesOverlapValidator(group: AbstractControl): ValidationErrors | null {
     const leavesArray = group.get('leaves') as FormArray;
     const leaves = leavesArray.controls.map((ctrl) => ({
       start: new Date(ctrl.get('startDate')?.value),
@@ -109,6 +91,7 @@ export class EmployeeEditModalComponent implements OnInit {
   createLeaveGroup(leave?: LeaveDTO): FormGroup {
     return this.fb.group(
       {
+        leaveId: leave?.leaveId ?? EMPTY_GUID,
         startDate: [leave?.startDate ?? null, Validators.required],
         endDate: [leave?.endDate ?? null, Validators.required],
       },
@@ -151,41 +134,25 @@ export class EmployeeEditModalComponent implements OnInit {
 
   onSubmit() {
     if (this.form.invalid || this.hasOverlap()) {
-      this.modal.error({
-        nzTitle: 'Invalid Leave Details',
-        nzContent:
-          'Please ensure all leave entries are valid and not overlapping.',
-      });
+      this.error = 'Fix date errors or overlaps before saving.';
       return;
     }
-
-    const result: EmployeeDTO = {
-      id: this.selectedEmployee.id,
+    this.loading = true;
+    const payload: EmployeeDTO = {
+      employeeId: this.selectedEmployee.employeeId,
       leaves: this.form.value.leaves,
     };
 
-    this.employeeService.updateEmployee(result).subscribe({
+    this.employeeService.updateEmployee(payload).subscribe({
       next: (response) => {
         if (response) {
-          this.modal.success({
-            nzTitle: 'Success',
-            nzContent: 'Leave details updated successfully.',
-          });
-          this.isVisible = false;
           this.close.emit();
         } else {
-          this.modal.error({
-            nzTitle: 'Error',
-            nzContent: 'Failed to update leave details.',
-          });
+          this.error = 'Server rejected the update.';
         }
       },
-      error: (err) => {
-        this.modal.error({
-          nzTitle: 'Error',
-          nzContent: 'Failed to update leave details.',
-        });
-        this.error = 'Failed to update leave details.';
+      error: () => {
+        this.error = 'Network or server error.';
       },
       complete: () => {
         this.loading = false;

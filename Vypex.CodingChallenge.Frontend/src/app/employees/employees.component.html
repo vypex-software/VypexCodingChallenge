@@ -35,9 +35,3 @@
 </nz-table>
 
 <nz-alert *ngIf="error" [nzMessage]="error" nzType="error"></nz-alert>
-
-<employee-edit-modal
-  *ngIf="selectedEmployee"
-  [selectedEmployee]="selectedEmployee"
-  (close)="selectedEmployee = null"
-></employee-edit-modal>

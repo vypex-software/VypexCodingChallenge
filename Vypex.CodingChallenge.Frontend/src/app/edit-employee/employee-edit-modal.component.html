@@ -1,63 +1,63 @@
-<nz-modal
-  [(nzVisible)]="isVisible"
-  nzTitle="Edit Employee"
-  [nzClosable]="false"
-  [nzFooter]="null"
-  (nzOnCancel)="close.emit()"
+<form
+  nz-form
+  [nzLayout]="'vertical'"
+  [formGroup]="form"
+  *ngIf="form"
+  (ngSubmit)="onSubmit()"
 >
-  <ng-container *ngIf="selectedEmployee && form; else loadingTpl">
-    <ng-container>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div formArrayName="leaves" class="mt-4">
-          <div
-            *ngFor="let leave of leaves.controls; index as i"
-            [formGroupName]="i"
-            class="leave-row"
-          >
-            <nz-date-picker
-              formControlName="startDate"
-              placeholder="Start Date"
-            />
-            <nz-date-picker formControlName="endDate" placeholder="End Date" />
-
-            <button
-              nz-button
-              nzType="link"
-              type="button"
-              (click)="removeLeave(i)"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-
-        <button
-          nz-button
-          nzType="dashed"
-          type="button"
-          (click)="addLeave()"
-          class="mt-2"
+  <nz-alert
+    *ngIf="form.hasError('leavesOverlap')"
+    nzType="error"
+    nzMessage="Leave dates overlap. Please fix them."
+    nzShowIcon
+  ></nz-alert>
+  <div formArrayName="leaves">
+    <div
+      *ngFor="let leave of leaves.controls; let i = index"
+      [formGroupName]="i"
+      class="leave-row"
+    >
+      <nz-form-item>
+        <nz-form-label nzFor="startDate{{ i }}" nzRequired
+          >Start Date</nz-form-label
         >
-          Add Leave
-        </button>
+        <nz-form-control [nzErrorTip]="'Required'">
+          <nz-date-picker
+            id="startDate{{ i }}"
+            formControlName="startDate"
+            nzPlaceHolder="Start Date"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
 
-        <div class="mt-3">
-          <button
-            nz-button
-            nzType="primary"
-            htmlType="submit"
-            [disabled]="form.invalid"
-          >
-            Save
-          </button>
-          <button nz-button nzType="default" (click)="close.emit()">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </ng-container>
-  </ng-container>
-  <ng-template #loadingTpl>
-    <div class="p-4">Loading employee details...</div>
-  </ng-template>
-</nz-modal>
+      <nz-form-item>
+        <nz-form-label nzFor="endDate{{ i }}" nzRequired
+          >End Date</nz-form-label
+        >
+        <nz-form-control [nzErrorTip]="'Required'">
+          <nz-date-picker
+            id="endDate{{ i }}"
+            formControlName="endDate"
+            nzPlaceHolder="End Date"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button nzType="link" type="button" (click)="removeLeave(i)">
+        Remove
+      </button>
+    </div>
+  </div>
+  <button nz-button nzType="dashed" type="button" (click)="addLeave()">
+    Add Leave
+  </button>
+  <button
+    nz-button
+    nzType="primary"
+    [disabled]="form.invalid"
+    type="submit"
+    (click)="onSubmit()"
+  >
+    Save
+  </button>
+</form>

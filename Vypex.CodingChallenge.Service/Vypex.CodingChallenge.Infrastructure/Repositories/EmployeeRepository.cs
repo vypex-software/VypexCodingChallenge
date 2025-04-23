@@ -12,18 +12,9 @@ namespace Vypex.CodingChallenge.Infrastructure.Repositories
         {
         }
 
-        public async Task<List<EmployeeDTO>> GetAllWithTotalLeaveDaysAsync(CancellationToken cancellationToken)
+        public async Task<List<Employee>> GetAllWithTotalLeaveDaysAsync(CancellationToken cancellationToken)
         {
-            var employees = await _context.Employees.Include(e => e.Leaves).ToListAsync(cancellationToken);
-
-            return employees.Select(e => new EmployeeDTO
-            {
-                Id = e.Id,
-                Name = e.Name,
-                TotalLeaveDays = e.Leaves
-                    .Where(l => l.DeletedOn == null)
-                    .Sum(l => (l.EndDate.Date - l.StartDate.Date).Days + 1)
-            }).ToList();
+            return await _context.Employees.Include(e => e.Leaves).ToListAsync(cancellationToken);
         }
 
 

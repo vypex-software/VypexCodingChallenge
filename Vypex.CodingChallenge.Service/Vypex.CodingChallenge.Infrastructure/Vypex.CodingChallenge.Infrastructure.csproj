@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vypex.CodingChallenge.Domain\Vypex.CodingChallenge.Domain.csproj" />
+    <ProjectReference Include="..\Vypex.CodingChallenge.Application\Vypex.CodingChallenge.Application.csproj" />
   </ItemGroup>
 
 </Project>

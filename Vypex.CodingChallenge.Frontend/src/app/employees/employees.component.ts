@@ -8,6 +8,8 @@ import { finalize } from 'rxjs';
 import { EmployeeService } from '../api/services/employee-api.service';
 import { EmployeeEditModalComponent } from '../edit-employee/employee-edit-modal.component';
 import { EmployeeDTO, EmployeeListDTO } from '../interfaces/employeeDto';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { EmployeeEditSignalModalComponent } from '../edit-employee-signal/edit-employee-signal.component';
 
 @Component({
   selector: 'app-employee-list',
@@ -33,7 +35,7 @@ export class EmployeeListComponent implements OnInit {
   selectedEmployeeId: string | null = null;
   selectedEmployee: EmployeeDTO | null = null;
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(private employeeService: EmployeeService, private modal: NzModalService) {}
 
   ngOnInit() {
     this.loadEmployees();
@@ -76,12 +78,27 @@ export class EmployeeListComponent implements OnInit {
   editEmployee(employeeId: string) {
     this.loadEmployeeDetails(employeeId);
   }
+
   loadEmployeeDetails(employeeId: string) {
     this.loading = true;
     this.error = null;
     this.employeeService.getEmployeeDetails(employeeId).subscribe({
-      next: (data) => {
-        this.selectedEmployee = data;
+      next: (employee) => {
+        this.selectedEmployee = employee;
+        const modalRef = this.modal.create({
+          nzTitle: 'Edit Employee',
+          nzContent: EmployeeEditSignalModalComponent,
+          nzFooter: null
+        });
+        const contentComponent = modalRef.getContentComponent();
+        if (contentComponent) {
+          contentComponent.selectedEmployee = employee;
+        }
+        modalRef.afterClose.subscribe((result) => {
+          if (result === 'updated') {
+            this.reload();
+          }
+        });
       },
       error: (err) => {
         this.error = 'Failed to load employee details.';

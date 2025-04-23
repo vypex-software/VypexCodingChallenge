@@ -7,6 +7,6 @@ export interface EmployeeListDTO {
 }
 
 export interface EmployeeDTO {
-  id: string;
+  employeeId: string;
   leaves: LeaveDTO[];
 }

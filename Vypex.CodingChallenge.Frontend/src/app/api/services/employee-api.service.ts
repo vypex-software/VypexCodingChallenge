@@ -30,32 +30,20 @@ export class EmployeeService {
   }
 
   updateEmployee(employee: EmployeeDTO): Observable<boolean> {
-    const url = `${this.baseUrl}/${employee.id}`;
+    const url = `${this.baseUrl}/${employee.employeeId}`;
     const body = {
-      employeeId: employee.id,
+      employeeId: employee.employeeId,
       leaves: employee.leaves,
     };
 
-    return this.http.put<boolean>(url, body).pipe(
+    return this.http.post<boolean>(url, body).pipe(
       tap(() =>
-        console.log(`Updated leave details for employee ${employee.id}`)
+        console.log(`Updated leave details for employee ${employee.employeeId}`)
       ),
       catchError((err) => {
-        console.error(`Failed to update employee ${employee.id}:`, err);
+        console.error(`Failed to update employee ${employee.employeeId}:`, err);
         throw err;
       })
     );
-  }
-
-  searchEmployees(name: string): Observable<EmployeeDTO[]> {
-    const params = { name };
-    return this.http
-      .get<EmployeeDTO[]>(`${this.baseUrl}/search`, { params })
-      .pipe(
-        catchError((err) => {
-          console.error('Search failed:', err);
-          return of([]);
-        })
-      );
   }
 }
