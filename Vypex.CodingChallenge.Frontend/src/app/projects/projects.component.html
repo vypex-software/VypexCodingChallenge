@@ -1,0 +1,35 @@
+@if (projects$ | async; as projects) {
+<div class="flex flex-col gap-4 px-5">
+  <div class="flex flex-row gap-2 justify-end">
+    <div>
+      <input nz-input type="text" placeholder="Search..." [formControl]="searchControl" />
+    </div>
+    <div>
+      <button type="button" nz-button (click)="reload()">⟲ Reload</button>
+    </div>
+  </div>
+  @if (projects.error; as error) {
+  <nz-alert nzType="error" [nzMessage]="error.message"></nz-alert>
+  }
+  <nz-table nzTemplateMode [nzLoading]="projects.loading">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Project key</th>
+        <th>Total points</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (project of projects.data; track project.id) {
+      <tr>
+        <td>{{ project.id }}</td>
+        <td>{{ project.key }}</td>
+        <td>{{ project.totalPoints }}</td>
+        <td><button nz-button nzType="default" (click)="edit(project.id)">✏️ Edit</button></td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>
+}

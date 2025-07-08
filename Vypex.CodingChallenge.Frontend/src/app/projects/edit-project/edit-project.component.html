@@ -1,0 +1,28 @@
+@if (error(); as error) {
+<nz-alert nzType="error" [nzMessage]="error.message"></nz-alert>
+}
+
+@if (project$ | async; as project) {
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()">
+  <nz-form-item>
+    <nz-form-label>
+      <h3>Project key</h3>
+    </nz-form-label>
+    <nz-form-control>
+      <input nz-input type="text" [formControl]="form.controls.key">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>
+      <h3>Tasks</h3>
+    </nz-form-label>
+    <nz-form-control>
+      <app-project-tasks-form [tasks]="tasks()" (tasksChange)="form.controls.tasks.setValue($event)"></app-project-tasks-form>
+    </nz-form-control>
+  </nz-form-item>
+  <div class="flex flex-row gap-2 justify-end">
+    <button nz-button type="button" nzType="link" (click)="cancel()">Cancel</button>
+    <button nz-button nzType="primary">Submit</button>
+  </div>
+</form>
+}

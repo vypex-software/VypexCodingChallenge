@@ -1,0 +1,27 @@
+@for (task of formArrayValue(); track $index; let index = $index) {
+@let group = formArray.controls[index];
+<form [formGroup]="group">
+  <div class="well">
+    <div class="flex-1">
+      <nz-form-item>
+        <nz-form-label>Description</nz-form-label>
+        <nz-form-control nzErrorTip="Description is required">
+          <input nz-input type="text" [formControl]="group.controls.description" placeholder="Task description">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Points</nz-form-label>
+        <nz-form-control nzErrorTip="Points are required and must be greater than 0">
+          <nz-input-number [formControl]="group.controls.points" placeholder="Points" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div>
+      <button nz-button nzType="link" nzDanger title="Remove task" (click)="removeTask(index)">❌</button>
+    </div>
+  </div>
+</form>
+}
+<div>
+  <button nz-button nzType="link" (click)="addTask()" type="button">+ Add task</button>
+</div>
